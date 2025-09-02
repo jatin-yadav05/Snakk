@@ -2,14 +2,24 @@
 const express = require("express");
 const { connectDB } = require("./config/Database");
 
+// import routes:
+const userRoutes = require("./routes/user.routes");
+
+
 
 // Environment variable configuration
 require("dotenv").config();
 // ENV VARS:
 const PORT = process.env.PORT || 3001;
 
+
 // Application instantiation:
 const app = express();
+
+
+// Middlewares:
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 
 // Database connection
@@ -24,7 +34,8 @@ app.get("/", (req, res) => {
     });
 });
 
-
+// userRoutes:
+app.use("/api/v1/users", userRoutes);
 
 
 
