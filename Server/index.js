@@ -1,6 +1,7 @@
 // Module imports
 const express = require("express");
 const { connectDB } = require("./config/Database");
+const cookieParser = require("cookie-parser");
 
 // import routes:
 const userRoutes = require("./routes/user.routes");
@@ -20,6 +21,7 @@ const app = express();
 // Middlewares:
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 
 // Database connection
