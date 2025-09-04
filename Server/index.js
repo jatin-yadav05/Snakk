@@ -2,6 +2,8 @@
 const express = require("express");
 const { connectDB } = require("./config/Database");
 const cookieParser = require("cookie-parser");
+const fileUpload = require("express-fileupload");
+const { cloudinaryConnect } = require("./config/cloudinary");
 
 // import routes:
 const userRoutes = require("./routes/user.routes");
@@ -22,10 +24,15 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(fileUpload({
+    useTempFiles: true,
+    tempFileDir: __dirname + '/tmp', // Store temp files in Server/tmp
+})); // it will create a temp folder in root directory to store the images temporarily before uploading to cloudinary
 
 
-// Database connection
+// Database and Cloudinary connection
 connectDB();
+cloudinaryConnect();
 
 
 // Routes:

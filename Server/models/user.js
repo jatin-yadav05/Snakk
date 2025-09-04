@@ -11,10 +11,18 @@ const userModel = new mongoose.Schema({
     profilePicture: {
         type: String
     },
+    profilePicturePublicId: {
+        type: String
+    },
     email: {
         type: String,
         required: true,
         unique: true
+    },
+    bio: {
+        type: String,
+        maxLength: 300,
+        default: ""
     },
     password: {
         type: String,

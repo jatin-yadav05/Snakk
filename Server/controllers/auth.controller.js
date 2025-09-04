@@ -5,6 +5,22 @@ const OTP = require("../models/OTP");
 const VerifiedEmail = require("../models/verifiedEmail");
 const ForgotPassword = require("../models/forgotPassword");
 
+const tokenGenerator = (user, res) => {
+    const jwtToken = jwt.sign(
+        { _id: user._id, email: user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: process.env.EXPIRES_IN || '3d' }
+    );
+
+    // cookie-setting with JWT token:
+    const options = {
+        expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3days
+        httpOnly: true,
+    };
+    res.cookie("token", jwtToken, options);
+    return;
+}
+
 const signup = async (req, res) => {
     try {
 
@@ -54,6 +70,9 @@ const signup = async (req, res) => {
 
         newUser.password = undefined; // removing password from response
 
+        // JWT token Generation and cookie setting:
+        tokenGenerator(newUser, res);
+
         res.status(201).json({
             message: "User created successfully.",
             user: newUser
@@ -92,19 +111,8 @@ const login = async (req, res) => {
 
         user.password = undefined; // removing password from response
 
-        // JWT token Generation:
-        const jwtToken = jwt.sign(
-            { _id: user._id, email: user.email },
-            process.env.JWT_SECRET,
-            { expiresIn: process.env.EXPIRES_IN || '3d' }
-        );
-
-        // cookie-setting with JWT token:
-        const options = {
-            expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3days
-            httpOnly: true,
-        };
-        res.cookie("token", jwtToken, options);
+        // JWT token Generation and cookie setting:
+        tokenGenerator(user, res);
 
         res.status(200).json({
             message: "Login successful.",
@@ -144,6 +152,14 @@ const sendOTP = async (req, res) => {
     try {
         console.log(req.body);
         const { email } = req.body;
+
+        // check if user and verified email with that email already exists:
+        const existingUser = await User.findOne({ email });
+        const existingVerifiedEmail = await VerifiedEmail.findOne({ email });
+
+        if (existingUser || existingVerifiedEmail) {
+            return res.status(400).json({ message: "Email is already verified." });
+        }
 
         // check if otp exists:
         const existingOTP = await OTP.findOne({ email });
@@ -354,8 +370,5 @@ const changePassword = async (req, res) => {
         });
     }
 }
-
-
-
 
 module.exports = { signup, login, auth, sendOTP, verifyOTP, forgotPassword, resetPassword, changePassword };
