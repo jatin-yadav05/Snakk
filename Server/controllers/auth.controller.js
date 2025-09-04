@@ -261,7 +261,7 @@ const resetPassword = async (req, res) => {
 
         const isPasswordsMatching = await bcrypt.compare(password, userToBeUpdated.password);
 
-        if(isPasswordsMatching) {
+        if (isPasswordsMatching) {
             return res.status(401).json({
                 message: "Passwords must be unique"
             });
@@ -303,23 +303,23 @@ const changePassword = async (req, res) => {
             });
         }
 
-        if(oldPassword === newPassword) {
+        if (oldPassword === newPassword) {
             return res.status(401).json({
                 message: "Passwords must be unique"
             });
         }
 
         // passwords matching:
-        if(newPassword !== confirmPassword) {
+        if (newPassword !== confirmPassword) {
             return res.status(401).json({
                 message: "Passwords do not match"
             });
         }
 
         // extract the user:
-        const user = await User.findOne({email});
+        const user = await User.findOne({ email });
 
-        if(!user) {
+        if (!user) {
             return res.status(401).json({
                 message: "No user found!"
             });
@@ -328,7 +328,7 @@ const changePassword = async (req, res) => {
         // Verify pass from user:
         const isCorrectPass = await bcrypt.compare(oldPassword, user.password);
 
-        if(!isCorrectPass) {
+        if (!isCorrectPass) {
             return res.status(401).json({
                 message: "Password is incorrect!"
             });
@@ -354,5 +354,8 @@ const changePassword = async (req, res) => {
         });
     }
 }
+
+
+
 
 module.exports = { signup, login, auth, sendOTP, verifyOTP, forgotPassword, resetPassword, changePassword };

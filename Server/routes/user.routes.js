@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 // imports:
-const { signup, login, auth, sendOTP, verifyOTP, forgotPassword, resetPassword, changePassword } = require("../controllers/user.controller");
+const { signup, login, auth, sendOTP, verifyOTP, forgotPassword, resetPassword, changePassword } = require("../controllers/auth.controller");
+const { getProfile, updateProfile, deleteProfile } = require("../controllers/profile.controller");
 
 // middlewares:
 const { protectRoute } = require("../middlewares/auth.middleware");
@@ -18,5 +19,10 @@ router.post("/verify-otp", verifyOTP);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
 router.post("/change-password", changePassword);
+
+// profile routes:
+router.get("/profile/:id", protectRoute, getProfile);
+router.put("/update-profile/:id", protectRoute, updateProfile);
+router.delete("/delete-profile/:id", protectRoute, deleteProfile);
 
 module.exports = router;
