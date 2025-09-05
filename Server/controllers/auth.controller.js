@@ -90,7 +90,7 @@ const login = async (req, res) => {
     try {
         // fields destructuring:
         const { email, password } = req.body;
-        console.log(email, password);
+
         // validating fields:
         if (!email || !password) {
             return res.status(400).json({ message: "All fields are required." });
@@ -98,7 +98,8 @@ const login = async (req, res) => {
 
         // checking if user exists:
         const user = await User.findOne({ email });
-        console.log(user);
+
+        // if not, return error:
         if (!user) {
             return res.status(400).json({ message: "Invalid credentials." });
         }
@@ -150,7 +151,6 @@ const auth = async (req, res) => {
 
 const sendOTP = async (req, res) => {
     try {
-        console.log(req.body);
         const { email } = req.body;
 
         // check if user and verified email with that email already exists:
