@@ -21,21 +21,20 @@ const productSchema = new mongoose.Schema({
     description: {
         type: String,
         required: true,
-        minLength: 10,
-        maxLength: 500
+        maxLength: 500,
+        default: "No description not provided."
     },
     isAvailable: {
         type: Boolean,
         default: true
     },
-    Category: {
+    category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Category",
         required: true
     },
     image: {
-        type: String,
-        required: true
+        type: String
     },
     price: {
         type: Number,

@@ -79,6 +79,9 @@ const updateProfile = async (req, res) => {
 };
 
 const updateProfilePicture = async(req, res) => {
+    
+    const uploadedImage = null;
+    
     try {
         
         // extract user from req:
@@ -100,17 +103,15 @@ const updateProfilePicture = async(req, res) => {
         }
 
         // upload image to cloudinary:
-        const uploadedImage = await uploadImageToCloudinary(
+        uploadedImage = await uploadImageToCloudinary(
             image,
             process.env.FOLDER_NAME,
             1000,
             1000
         );
 
-        // Delete temp file after upload
-        fs.unlink(image.tempFilePath, (err) => {
-            if (err) console.error('Failed to delete temp file:', err);
-        });
+        // remove the temporary file:
+        fs.unlinkSync(image.tempFilePath);
 
         // update user profile picture in DB:
         await User.findByIdAndUpdate(user._id, { profilePicture: uploadedImage.secure_url, profilePicturePublicId: uploadedImage.public_id });
@@ -126,6 +127,14 @@ const updateProfilePicture = async(req, res) => {
 
     }
     catch(error) {
+        // handle error while uploading image to cloudinary:
+        if (error.message === "Cloudinary upload failed") {
+            // destroy the uploaded image if exists:
+            if (uploadedImage && uploadedImage.public_id) {
+                await cloudinary.uploader.destroy(uploadedImage.public_id);
+            }
+        }
+
         console.log(error);
         res.status(500).json({
             message: "Error while updating profile picture."

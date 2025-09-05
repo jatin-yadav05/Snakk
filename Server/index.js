@@ -5,9 +5,11 @@ const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
 const { cloudinaryConnect } = require("./config/cloudinary");
 
+
 // import routes:
 const userRoutes = require("./routes/user.routes");
-
+const productRoutes = require("./routes/product.routes");
+const categoryRoutes = require("./routes/category.routes");
 
 
 // Environment variable configuration
@@ -43,10 +45,11 @@ app.get("/", (req, res) => {
     });
 });
 
+
 // userRoutes:
 app.use("/api/v1/users", userRoutes);
-
-
+app.use("/api/v1/products", productRoutes);
+app.use("/api/v1/categories", categoryRoutes);
 
 
 // Server startup

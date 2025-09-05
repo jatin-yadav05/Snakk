@@ -8,10 +8,12 @@ const { getProfile, updateProfile, deleteProfile, updateProfilePicture } = requi
 // middlewares:
 const { protectRoute } = require("../middlewares/auth.middleware");
 
+// auth routes:
 router.post("/signup", signup);
 router.post("/login", login);
 router.get("/auth", protectRoute, auth);
 
+// otp routes:
 router.post("/send-otp", sendOTP);
 router.post("/verify-otp", verifyOTP);
 
