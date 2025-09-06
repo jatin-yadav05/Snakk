@@ -5,7 +5,6 @@ const { uploadImageToCloudinary } = require('../utils/imageUploader');
 const fs = require('fs');
 
 // Create a new product
-
 const addProduct = async (req, res) => {
     
     // upload image to cloudinary:
@@ -14,7 +13,7 @@ const addProduct = async (req, res) => {
     try {
         // Extract product details from request body
         const { name, quantity, description, isAvailable, category, price, tags } = req.body;
-        const { productImage } = req.files;
+        const productImage = req.files ? req.files.productImage : null;
 
         // validate inputs:
         if (!name || !quantity || !category || !price || !tags) {
@@ -36,7 +35,7 @@ const addProduct = async (req, res) => {
         }
 
         // validate image:
-        if (!productImage || productImage.size > 5 * 1024 * 1024) {
+        if (productImage !== null && (!productImage || productImage.size > 5 * 1024 * 1024)) {
             return res.status(400).json({
                 message: "Invalid image. Image must be less than 5MB."
             });
@@ -73,7 +72,7 @@ const addProduct = async (req, res) => {
 
         
         // if image is provided, upload to cloudinary:
-        if (productImage || productImage.length > 0) {
+        if (productImage !== null && (productImage || productImage.length > 0)) {
             // upload to cloudinary and get the url and public id
             uploadedImage = await uploadImageToCloudinary(
                 productImage,
