@@ -1,7 +1,7 @@
 function App() {
   return (
     <div>
-      Snakk App
+      Welcome to Snakk App
     </div>
   )
 }
