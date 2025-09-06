@@ -19,6 +19,11 @@ const messageSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+        required: false // Optional field to link a product
+    },
     isSeen: {
         type: Boolean,
         default: false
